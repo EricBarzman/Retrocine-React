@@ -14,10 +14,8 @@ function Login() {
     username: '',
     password: '',
   }
-  const [formData, setFormData] = useState(defaultFormData);
-   
+  const [formData, setFormData] = useState(defaultFormData);   
   const [errors, setErrors] = useState([]);
-
 
   function handleChange(e) {
     setFormData({
@@ -26,9 +24,9 @@ function Login() {
     })
   }
 
+
   function handleSubmit(e) {
-    e.preventDefault();
-    
+    e.preventDefault();    
     setErrors([]);
     
     const newErrors = []
@@ -42,11 +40,13 @@ function Login() {
       axios
         .post('token/login/', formData)
         .then((response) => {
-          const token = response.data.auth_token
-          axios.defaults.headers.common['Authorization'] = "Token " + token
-          dispatch(updateToken(token))
+          const token = response.data.auth_token;
+          axios.defaults.headers.common['Authorization'] = "Token " + token;
+          dispatch(updateToken(token));
+          dispatch({ type: 'FETCH_FAVORITES' });
           navigate('/')
         })
+        
         .catch((error) => {
           if (error.response) {
             for (const property in error.response.data) {

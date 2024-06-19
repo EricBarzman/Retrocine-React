@@ -1,12 +1,50 @@
 /* eslint-disable react/prop-types */
 import { Link } from 'react-router-dom';
+
 import { FaPlay, } from "react-icons/fa";
 import { MdFavoriteBorder } from "react-icons/md";
+import { MdFavorite } from "react-icons/md";
+
+import { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+
+import toast from 'react-hot-toast';
+import axios from '@/components/utils/axios'
 
 function MovieCard({ movie }) {
 
-  function addToMyFavorites(event) {
-    console.log(event.currentTarget.id);
+  const my_favorites = useSelector((state) => state.favorites.my_favorites);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const dispatch = useDispatch();
+  
+  useEffect(() => {
+    const found = my_favorites.some((favorite) => favorite.id === movie.id)
+    if (found) setIsFavorite(true);
+  }, [])
+  
+
+  function addToMyFavorites() {   
+    axios
+      .get(`votes/my-favorites/add/${movie.id}`)
+      .then(() => {
+        toast.success('Added to my favorites');
+        dispatch({ type: 'FETCH_FAVORITES' })
+      })
+      .catch(() => {
+        toast.error('Could not add to favorites')
+      })
+  }
+
+  function removeFromMyFavorites() {
+    axios
+      .get(`votes/my-favorites/remove/${movie.id}`)
+      .then(() => {
+        toast.success('Removed from my favorites');
+        dispatch({ type: 'FETCH_FAVORITES' })
+      })
+      .catch(() => {
+        toast.error('Could not add to favorites')
+      })
   }
 
   return (
@@ -27,9 +65,18 @@ function MovieCard({ movie }) {
             <Link to={'/movies/' + movie.slug}><FaPlay /></Link>
           </button>
 
-          <button onClick={addToMyFavorites} id={movie.id}>
-            <MdFavoriteBorder />
-          </button>
+          {!isFavorite && (
+            <button onClick={addToMyFavorites}>
+              <MdFavoriteBorder />
+            </button>
+          )}
+          
+          {isFavorite && (
+            <button onClick={removeFromMyFavorites}>
+              <MdFavorite className='fill-primary' />
+            </button>
+          )}
+        
         </div>
 
     </article>

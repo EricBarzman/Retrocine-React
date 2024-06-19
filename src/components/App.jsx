@@ -17,23 +17,32 @@ import MoviePage from './Movies/MoviePage/MoviePage';
 import Pick_of_the_week from './Movies/PickOfTheWeek/Pick_of_the_week';
 
 import My_Account from './MyAccount/My_Account';
+import My_Favorites from './MyAccount/My_Favorites';
+
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+
+import axios from './utils/axios';
 
 export default function App() {
 
   // Check if user is logged first
   const navigate = useNavigate();
   const user = useSelector((state) => state.user)
-  const { logged } = user;
+  const { logged, token } = user;
 
   useEffect(() => {
-    if (!logged)
+    if (!logged) {
+      axios.defaults.headers.common['Authorization'] = '';
       navigate('/login')
+    }
+    if (token) {
+      console.log(token);
+      axios.defaults.headers.common['Authorization'] = "Token " + token;
+    }
   }, [])
 
-  
   const location = useLocation();
   
   return (
@@ -51,7 +60,7 @@ export default function App() {
         <Route path="/movies/:movie_slug" element={<MoviePage />} />
         <Route path="/pick-of-the-week" element={<Pick_of_the_week />} />
         <Route path="/popular" element={<MoviePage />} />
-        <Route path="/my-favorite" element={<MoviePage />} />
+        <Route path="/my-favorites" element={<My_Favorites />} />
         <Route path="/my-account" element={<My_Account />} />
         <Route path="/about" element={<About />} />
         <Route path="/terms-of-use" element={<Terms_of_use />} />

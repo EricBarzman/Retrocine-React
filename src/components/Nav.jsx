@@ -24,9 +24,9 @@ function Nav() {
                     <Link to='/pick-of-the-week'>Pick of the week</Link>
                 </li>
             
-                <li className="font-light px-4 hover:-translate-y-2 duration-500 transition-all">
+                {/* <li className="font-light px-4 hover:-translate-y-2 duration-500 transition-all">
                     <Link to='/popular'>Popular</Link>
-                </li>
+                </li> */}
             
                 <li className="font-light px-4 hover:-translate-y-2 duration-500 transition-all">
                     <Link to='/my-favorites'>My favorites</Link>

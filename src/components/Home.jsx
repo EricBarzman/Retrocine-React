@@ -7,7 +7,6 @@ function Home() {
 
     const [movie, setMovie] = useState({});
     const [movies, setMovies] = useState([]);
-  
     
     useEffect(() => {
         document.title = 'Home | Retrocine';

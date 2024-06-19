@@ -1,11 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
+import axios from '@/components/utils/axios'
 
 export const initialState = {
-    logged: false,
-    username: '',
-    mail: '',
-    token: '',
-    avatarURL: '',
+    logged: localStorage.getItem('token') ? true : false,
+    token: localStorage.getItem('token') ? localStorage.getItem('token') : '',
 }
 
 const userSlice = createSlice({
@@ -13,11 +11,15 @@ const userSlice = createSlice({
     initialState,
     reducers: {
         updateToken: (state, action) => {
+            const token = action.payload;
+
             const newState = {
                 ...state,
                 logged: true,
-                token: action.payload
+                token: token
             };
+            localStorage.setItem('token', token)
+            // axios.defaults.headers.common['Authorization'] = "Token " + token;
             return newState;
         },
 
@@ -25,11 +27,10 @@ const userSlice = createSlice({
             const newState = {
                 ...state,
                 logged: false,
-                username: '',
-                mail: '',
                 token: '',
-                avatarURL: '',
             };
+            localStorage.removeItem('token')
+            axios.defaults.headers.common['Authorization'] = "";
             return newState;
         }
     }
