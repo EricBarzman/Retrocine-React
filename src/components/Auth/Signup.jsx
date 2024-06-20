@@ -139,7 +139,7 @@ function Signup() {
 
               <button
                 type='submit'
-                className='mt-4 rounded-xl bg-gray-600 px-4 py-2 hover:bg-gray-400'
+                className='mt-4 rounded-xl px-6 py-3 bg-primary border-2 border-black text-white hover:bg-green-400 transition-all'
               // eslint-disable-next-line react/no-unescaped-entities
               >Roll'em!</button>
             </form>

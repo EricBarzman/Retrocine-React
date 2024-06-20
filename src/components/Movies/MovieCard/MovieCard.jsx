@@ -28,7 +28,9 @@ function MovieCard({ movie }) {
       .get(`votes/my-favorites/add/${movie.id}`)
       .then(() => {
         toast.success('Added to my favorites');
-        dispatch({ type: 'FETCH_FAVORITES' })
+        dispatch({ type: 'FETCH_FAVORITES' });
+        // Cheat to display card as favorite, without rerendering the page
+        setIsFavorite(true);
       })
       .catch(() => {
         toast.error('Could not add to favorites')
@@ -40,7 +42,9 @@ function MovieCard({ movie }) {
       .get(`votes/my-favorites/remove/${movie.id}`)
       .then(() => {
         toast.success('Removed from my favorites');
-        dispatch({ type: 'FETCH_FAVORITES' })
+        dispatch({ type: 'FETCH_FAVORITES' });
+        // Little cheat to display card no longer as favorite, yet without rerendering
+        setIsFavorite(false);
       })
       .catch(() => {
         toast.error('Could not add to favorites')

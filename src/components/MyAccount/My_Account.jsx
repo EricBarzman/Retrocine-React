@@ -22,7 +22,7 @@ function My_Account() {
         <div className="">Something different!</div>
         
         <button
-            className="px-6 py-3 mt-10 bg-primary text-white rounded-lg hover:border-solid-2 hover:border-blue-400"
+            className='mt-4 rounded-xl px-6 py-3 bg-primary text-white hover:bg-green-400 transition-all'
             onClick={clickLogout}
         >
                 Log out

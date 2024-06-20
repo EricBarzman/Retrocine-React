@@ -24,6 +24,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import axios from './utils/axios';
+import Popular from './Movies/Popular/Popular';
 
 export default function App() {
 
@@ -38,7 +39,6 @@ export default function App() {
       navigate('/login')
     }
     if (token) {
-      console.log(token);
       axios.defaults.headers.common['Authorization'] = "Token " + token;
     }
   }, [])
@@ -59,7 +59,7 @@ export default function App() {
         <Route path="/movies/" element={<Index />} />
         <Route path="/movies/:movie_slug" element={<MoviePage />} />
         <Route path="/pick-of-the-week" element={<Pick_of_the_week />} />
-        <Route path="/popular" element={<MoviePage />} />
+        <Route path="/popular" element={<Popular />} />
         <Route path="/my-favorites" element={<My_Favorites />} />
         <Route path="/my-account" element={<My_Account />} />
         <Route path="/about" element={<About />} />

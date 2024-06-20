@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import axios from "@/components/utils/axios";
+import { useSelector } from "react-redux";
 
 import MovieCard from "@/components/Movies/MovieCard/MovieCard";
 
@@ -8,6 +9,9 @@ function Index() {
   const [movies, setMovies] = useState([]);
   const [genres, setGenres] = useState([]);
   const [countries, setCountries] = useState([]);
+
+  // eslint-disable-next-line no-unused-vars
+  const myFavorites = useSelector((state) => state.favorites.my_favorites)
   
   // On mount
   useEffect(()=> {

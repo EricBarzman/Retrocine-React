@@ -32,7 +32,7 @@ export default function Terms_of_use() {
       <div className="ml-4 mb-6">
         <h3 className="font-semibold mb-4">3. Services</h3>
         <ol className="ml-6">
-          <li className="mb-4">1.1 Your subscription lasts until you cancel it. To use Retrocine, you need access to internet and a compatible device</li>
+          <li className="mb-4">3.1 Your subscription lasts until you cancel it. To use Retrocine, you need access to internet and a compatible device</li>
         </ol>
       </div>
 

@@ -81,7 +81,7 @@ export default function Contact() {
                 placeholder="Add your message here..."
               />
             </div>
-            <button type="submit" className="mt-8 rounded-lg bg-gray-500 px-6 py-3">Submit</button>
+            <button type="submit" className="mt-8 rounded-lg bg-gray-500 px-6 py-3 hover:bg-gray-400">Submit</button>
           </form>
         </div>
 
