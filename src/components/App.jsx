@@ -25,6 +25,7 @@ import { useSelector } from 'react-redux';
 
 import axios from './utils/axios';
 import Popular from './Movies/Popular/Popular';
+import Search from './Movies/Search/Search';
 
 export default function App() {
 
@@ -56,6 +57,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/search/" element={<Search />} />
         <Route path="/movies/" element={<Index />} />
         <Route path="/movies/:movie_slug" element={<MoviePage />} />
         <Route path="/pick-of-the-week" element={<Pick_of_the_week />} />
