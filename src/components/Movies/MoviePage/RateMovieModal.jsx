@@ -17,7 +17,7 @@ export default function RateMovieModal({ movie, isRateMovieModalOpen, setIsRateM
     };
 
     async function submitVote() {
-        await axios.post(`votes/vote-for-movie/${movie.id}`, { comment, rating })
+        await axios.post(`users/vote-for-movie/${movie.id}`, { comment, rating })
             .then((response) => {
                 console.log(response.data);
                 toast.success('Vote sent!');

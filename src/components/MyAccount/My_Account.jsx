@@ -23,13 +23,13 @@ function My_Account() {
 
   function clickLogout() {
     dispatch(handleLogout());
-    navigate('/login')
+    navigate('/login');
   }
 
   function submitAvatar() {
     axios
       .post('votes/change-avatar/', chosenAvatar)
-      navigate('/my-account')
+      navigate('/my-account');
   } 
 
     return (

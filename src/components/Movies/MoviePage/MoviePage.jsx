@@ -60,7 +60,7 @@ function MoviePage() {
 
     function addToMyFavorites() {
         axios
-            .get(`votes/my-favorites/add/${movie.id}`)
+            .get(`users/my-favorites/add/${movie.id}`)
             .then(() => {
                 toast.success('Added to my favorites');
                 dispatch({ type: 'FETCH_FAVORITES' });
@@ -75,7 +75,7 @@ function MoviePage() {
 
     function removeFromMyFavorites() {
         axios
-            .get(`votes/my-favorites/remove/${movie.id}`)
+            .get(`users/my-favorites/remove/${movie.id}`)
             .then(() => {
                 toast.success('Removed from my favorites');
                 dispatch({ type: 'FETCH_FAVORITES' });

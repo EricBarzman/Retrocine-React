@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import axios from '@/components/utils/axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import toast from "react-hot-toast";
 
 function Signup() {
@@ -12,16 +12,32 @@ function Signup() {
     username: '',
     email: '',
     password: '',
+    avatar: null,
   }
   const [formData, setFormData] = useState(defaultFormData);
+  const [avatars, setAvatars] = useState([]);
    
   // Errors
    const [errors, setErrors] = useState([]);
+
+  useEffect(()=> {
+    document.title = `My Account | Retrocine`;
+    axios
+      .get('users/avatars/')
+      .then(response => setAvatars(response.data))
+  }, [])
 
   function handleChange(e) {
     setFormData({
       ...formData,
       [e.target.name] : e.target.value
+    })
+  }
+
+  function handleAvatarClick(e){
+    setFormData({
+      ...formData,
+      avatar: Number(e.currentTarget.id)
     })
   }
 
@@ -43,9 +59,9 @@ function Signup() {
     
     if (!errors.length) {
       axios
-        .post('users/', formData)
-        .then(() => {
-          toast.success('Profile successfully created.');
+        .post('users/signup/', formData)
+        .then((response) => {
+          toast.success(response.data.message);
           navigate('/login')
         })
         .catch((error) => {
@@ -100,9 +116,26 @@ function Signup() {
                 />
               </div>
 
-              <div className="mt-5">
+              <div className='mt-8 flex flex-wrap'>
+                {avatars.map((avatar) => (
+                    <div
+                    onClick={handleAvatarClick}
+                    id={avatar.id}
+                    key={avatar.id}
+                    className='m-4'
+                    >
+                        <img
+                            className={`w-[150px] h-[150px] hover:rounded-sm hover:border-primary hover:border-2 ${avatar.id == formData.avatar ? 'border-primary border-2' : ''}`}
+                            src={avatar.get_image}
+                            alt="avatar"
+                        />
+                    </div>
+                ))}
+            </div>
+
+              <div className="mt-5 flex flex-col">
                 {errors.map((error) => (
-                  <p key={error}>{error}</p>
+                  <p className='rounded-lg p-4 mb-2 bg-red-500' key={error}>{error}</p>
                 ))}
               </div>
 
