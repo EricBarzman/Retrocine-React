@@ -44,6 +44,7 @@ function Login() {
           axios.defaults.headers.common['Authorization'] = "Token " + token;
           dispatch(updateToken(token));
           dispatch({ type: 'FETCH_FAVORITES' });
+          dispatch({ type: 'FETCH_USER_INFOS' });
           navigate('/')
         })
         

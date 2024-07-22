@@ -2,11 +2,14 @@ import { useState, useEffect } from 'react';
 import axios from '@/components/utils/axios';
 import MovieVideo from './Movies/MovieVideo/MovieVideo';
 import MovieCard from './Movies/MovieCard/MovieCard'
+import { useSelector } from 'react-redux';
 
 function Home() {
 
     const [movie, setMovie] = useState({});
     const [movies, setMovies] = useState([]);
+
+    const user = useSelector((state) => state.user)
     
     useEffect(() => {
         document.title = 'Home | Retrocine';
@@ -21,7 +24,10 @@ function Home() {
     return (
         <main className='text-white px-10 py-4'>
             
-            <h2 className='mt-6 ml-10 mb-20 text-4xl font-semibold'>Welcome back, Annie!</h2>
+            <h2 className='mt-6 ml-10 mb-20 capitalize text-4xl font-semibold'>
+                Welcome back, {user.username}!
+            </h2>
+
             <div>
                 <MovieVideo youtube_id={movie.youtube_id} />
             </div>

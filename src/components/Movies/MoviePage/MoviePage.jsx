@@ -6,10 +6,11 @@ import { MdFavoriteBorder } from "react-icons/md";
 import { MdFavorite } from "react-icons/md";
 
 import MovieVideo from '../MovieVideo/MovieVideo';
-import VoteForMovie from "./VoteForMovie";
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from "react-redux";
 import CommentCard from "./CommentCard";
+import RateMovieModal from "./RateMovieModal";
+import BackDrop from "./BackDrop";
 
 function MoviePage() {
     
@@ -30,6 +31,7 @@ function MoviePage() {
 
     // Check if it's a favorite, and if already voted for
     const [isFavorite, setIsFavorite] = useState(false);
+    const [isRateMovieModalOpen, setIsRateMovieModalOpen] = useState(false);
     
     const dispatch = useDispatch();
     const my_favorites = useSelector((state) => state.favorites.my_favorites);
@@ -86,8 +88,7 @@ function MoviePage() {
     }
 
     
-
-    return (
+  return (
     <main className="text-white ml-20 py-10 mx-auto">  
         
         <h2 className="text-3xl font-semibold mb-6">{movie.title}</h2>
@@ -98,27 +99,45 @@ function MoviePage() {
         <section className="mb-6">
             <div className="mt-10 ml-5 mb-10">
                 
-                {/* Add to favorites */}
-                <div className="mb-6 text-xl">
-                    {!isFavorite && (
-                        <button onClick={addToMyFavorites} id={movie.id}>
-                        <MdFavoriteBorder />
+                <div className="flex items-end mb-4">
+                    {/* Add to favorites */}
+                    <div className="mb-6 text-xl">
+                        {!isFavorite && (
+                            <button onClick={addToMyFavorites} id={movie.id}>
+                            <MdFavoriteBorder />
+                            </button>
+                        )}
+                        {isFavorite && (
+                            <button onClick={removeFromMyFavorites} id={movie.id}>
+                            <MdFavorite className='fill-primary' />
+                            </button>
+                        )}
+                    </div>
+                    
+                    {/* Vote for movie */}
+                    <div className="ml-10 mb-4">
+
+                        <button
+                            className='mt-4 rounded-xl px-4 py-2 bg-primary border-2 border-black text-white hover:bg-green-400 transition-all'
+                            onClick={() => setIsRateMovieModalOpen(true)}
+                        >
+                            Rate movie
                         </button>
-                    )}
-                    {isFavorite && (
-                        <button onClick={removeFromMyFavorites} id={movie.id}>
-                        <MdFavorite className='fill-primary' />
-                        </button>
-                    )}
+
+                    </div>
+
                 </div>
 
                 {/* Information */}
-                <p className="text-sm mb-3">
-                    <span className="text-gray-500">Directed by:</span> {movie.director.first_name} {movie.director.last_name}
-                </p>
-                <p className="text-sm mb-3"><span className="text-gray-500">Genre:</span> {movie.genre.label}</p>
-                <p className="text-sm mb-3"><span className="text-gray-500">Country:</span> {movie.country.name}</p>
-                <p className="text-sm mb-3"><span className="text-gray-500">Year:</span> {movie.year}</p>
+                <div>
+                    <p className="text-sm mb-3">
+                        <span className="text-gray-500">Directed by:</span> {movie.director.first_name} {movie.director.last_name}
+                    </p>
+                    <p className="text-sm mb-3"><span className="text-gray-500">Genre:</span> {movie.genre.label}</p>
+                    <p className="text-sm mb-3"><span className="text-gray-500">Country:</span> {movie.country.name}</p>
+                    <p className="text-sm mb-3"><span className="text-gray-500">Year:</span> {movie.year}</p>
+                </div>
+                
             </div>
 
             <div className="p-10">
@@ -134,22 +153,28 @@ function MoviePage() {
             
             </div>
 
-            {/* Vote for movie */}
-            <div className="ml-10 mb-4">
-                <VoteForMovie movie={movie} />
-            </div>
-
+            {/* Reviews */}
             {movie.votes && (
             <div className="pl-10 mt-10 w-1/3">
+
                 <h2 className="text-gray-400 mb-3">Ratings</h2>
+
                 {movie.votes.slice(0,3).map((vote) => (
                     <CommentCard key={vote.id} vote={vote} />
                 ))}
+                
             </div>
             )}
 
         </section>
-
+        
+        {/* RATE MOVIE MODAL */}
+        <RateMovieModal
+            movie={movie}
+            isRateMovieModalOpen={isRateMovieModalOpen}
+            setIsRateMovieModalOpen={setIsRateMovieModalOpen}
+        />
+        <BackDrop isRateMovieModalOpen={isRateMovieModalOpen} />
     </main>
   )
 }

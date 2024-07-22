@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateSearchInput } from "@/store/searchSlice";
 
 function Nav() {
@@ -9,6 +9,8 @@ function Nav() {
     const [searchInput, setSearchInput] = useState('');
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+    const user = useSelector((state) => state.user);
 
     function handleSearch(event) {
         event.preventDefault();
@@ -26,7 +28,7 @@ function Nav() {
             </h1>
             
             {/* Search options */}
-            <ul className="flex ml-4 text-base items-center justify-between">
+            <ul className="hidden md:flex ml-4 md:text-sm lg:text-base items-center justify-between">
             
                 <li className="font-light px-4 hover:-translate-y-2 duration-500 transition-all">
                     <Link to='/'>Home</Link>
@@ -49,9 +51,9 @@ function Nav() {
             </ul>
         </div>
 
-        <div className="flex items-end justify-around mr-6 w-1/3">
+        <div className="flex items-end justify-around mr-6">
 
-            <div className="mr-8 flex items-center w-2/3">     
+            <div className="hidden md:flex mr-4 items-center">     
                 <form onSubmit={handleSearch}>
                     <input
                         className={`bg-black text-base py-2 px-4 rounded-full
@@ -66,13 +68,12 @@ function Nav() {
                     />
                 </form>
                 <FaMagnifyingGlass className="cursor-pointer ml-3"/>
-
             </div>
 
             {/* My account */}
             <div className="ml-4">
                 <Link to='/my-account'>
-                    <img src="http://localhost:8000/media/avatars/kubrick.jpg" className="w-[50px] h-[50px]" alt="avatar" />
+                    <img src={user.avatar} className="w-[50px] h-[50px]" alt="avatar" />
                 </Link>
             </div>
         </div>

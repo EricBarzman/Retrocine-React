@@ -1,38 +1,22 @@
 import { Link, useNavigate } from 'react-router-dom';
 import axios from '@/components/utils/axios';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import toast from "react-hot-toast";
 
 function Signup() {
 
   const navigate = useNavigate();
-  const [avatars, setAvatars] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get('votes/avatars/')
-      .then(response => setAvatars(response.data))
-  }, [])
-
+  
   // Handle form
   const defaultFormData = {
     username: '',
     email: '',
     password: '',
-    avatar: null,
   }
   const [formData, setFormData] = useState(defaultFormData);
    
   // Errors
    const [errors, setErrors] = useState([]);
-
-  
-  function handleAvatarClick(event){
-    setFormData({
-      ...formData,
-      avatar: Number(event.currentTarget.id)
-    })
-  }
 
   function handleChange(e) {
     setFormData({
@@ -60,8 +44,7 @@ function Signup() {
     if (!errors.length) {
       axios
         .post('users/', formData)
-        // eslint-disable-next-line no-unused-vars
-        .then((response) => {
+        .then(() => {
           toast.success('Profile successfully created.');
           navigate('/login')
         })
@@ -115,20 +98,6 @@ function Signup() {
                   placeholder='Your password...'
                   onChange={handleChange}
                 />
-              </div>
-
-              <h3 className='mt-4'>Choose an avatar</h3>
-              
-              <div className='mt-8 flex flex-wrap'>
-                {avatars.map((avatar) => (
-                  <div onClick={handleAvatarClick} id={avatar.id} key={avatar.id} className='m-4'>
-                    <img
-                      className={`w-[150px] h-[150px] hover:rounded-sm hover:border-primary hover:border-2
-                                  ${avatar.id == formData.avatar ? 'border-primary border-2' : ''}`}
-                      src={avatar.get_image} alt="avatar"
-                    />
-                  </div>
-                ))}
               </div>
 
               <div className="mt-5">

@@ -3,7 +3,11 @@ import axios from '@/components/utils/axios'
 
 export const initialState = {
     logged: localStorage.getItem('token') ? true : false,
-    token: localStorage.getItem('token') ? localStorage.getItem('token') : '',
+    token: localStorage.getItem('token') ?? '',
+    username: localStorage.getItem('username') ?? '',
+    email: localStorage.getItem('email') ?? '',
+    about: localStorage.getItem('about') ?? '',
+    avatar: localStorage.getItem('avatar') ?? '',
 }
 
 const userSlice = createSlice({
@@ -28,14 +32,40 @@ const userSlice = createSlice({
                 ...state,
                 logged: false,
                 token: '',
+                email:'',
+                about:'',
+                avatar: '',
+                username: '',
             };
             localStorage.removeItem('token')
+            localStorage.removeItem('email')
+            localStorage.removeItem('about')
+            localStorage.removeItem('avatar')
+            localStorage.removeItem('username')
             axios.defaults.headers.common['Authorization'] = "";
             return newState;
-        }
+        },
+
+        updateUserInfo: (state, action) => {
+            const { about, avatar, user } = action.payload;
+            
+            localStorage.setItem('about', about);
+            localStorage.setItem('email', user.email);
+            localStorage.setItem('avatar', avatar.get_image);
+            localStorage.setItem('username', user.username);
+
+            const newState = {
+                ...state,
+                about,
+                avatar: avatar.get_image,
+                email: user.email,
+                username: user.username, 
+            }
+            return newState;
+        },
     }
 });
 
-export const { updateToken, handleLogout } = userSlice.actions;
+export const { updateToken, handleLogout, updateUserInfo } = userSlice.actions;
 
 export default userSlice.reducer;
