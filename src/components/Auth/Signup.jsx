@@ -23,7 +23,7 @@ function Signup() {
   useEffect(()=> {
     document.title = `My Account | Retrocine`;
     axios
-      .get('users/avatars/')
+      .get('votes/avatars/')
       .then(response => setAvatars(response.data))
   }, [])
 
@@ -59,20 +59,16 @@ function Signup() {
     
     if (!errors.length) {
       axios
-        .post('users/signup/', formData)
+        .post('votes/signup/', formData)
         .then((response) => {
           toast.success(response.data.message);
           navigate('/login')
         })
         .catch((error) => {
-          if (error.response) {
-            for (const property in error.response.data) {
-              setErrors([...errors, `${property}: ${error.response.data[property]}`])
-            } 
-            console.log(JSON.stringify(error.response.data))
-          } else if (error.message) {
+          console.log(error);
+          if (error.message) {
             setErrors([...errors, 'Something went wrong. Please try again.'])
-            console.log(JSON.stringify(error))
+            
           }
         })
     }

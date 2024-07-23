@@ -49,14 +49,9 @@ function Login() {
         })
         
         .catch((error) => {
-          if (error.response) {
-            for (const property in error.response.data) {
-              setErrors([...errors, `${property}: ${error.response.data[property]}`])
-            } 
-            console.log(JSON.stringify(error.response.data))
-          } else if (error.message) {
+          console.log(error);
+          if (error.message) {
             setErrors([...errors, 'Something went wrong. Please try again.'])
-            console.log(JSON.stringify(error))
           }
         })
     }
