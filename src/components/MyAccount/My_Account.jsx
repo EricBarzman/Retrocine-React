@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux";
+import toast from "react-hot-toast";
 
 import axios from '@/components/utils/axios';
 import { handleLogout } from "@/store/userSlice";
@@ -12,7 +13,7 @@ function My_Account() {
   const user = useSelector((state) => state.user);
   const [avatars, setAvatars] = useState([]);
 
-  const [chosenAvatar, setChosenAvatar] = useState(null);
+  const [chosenAvatar, setChosenAvatar] = useState();
 
   useEffect(()=> {
     document.title = `My Account | Retrocine`;
@@ -27,9 +28,14 @@ function My_Account() {
   }
 
   function submitAvatar() {
-    axios
-      .post('votes/change-avatar/', chosenAvatar)
-      navigate('/my-account');
+    try {
+        axios
+        .post('votes/change-avatar/', { avatar : chosenAvatar})
+        .then(() => toast.success("Avatar changed!"))
+        dispatch({ type: 'FETCH_USER_INFOS' });
+    } catch(error) {
+        toast.error(error)
+    }
   } 
 
     return (
@@ -45,10 +51,10 @@ function My_Account() {
                 </div>
             </div>
 
-            <div className="mb-10">
+            {/* <div className="mb-10">
                 <h2 className="font-bold mb-2">About</h2>
-                <p className="font-normal">{user.about}</p>
-            </div>
+                {user.about !== null && <p className="font-normal">{user.about}</p>}
+            </div> */}
 
             <h3 className='mt-4 font-bold'>Choose an avatar</h3>
               
