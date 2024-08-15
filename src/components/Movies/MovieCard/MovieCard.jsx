@@ -39,7 +39,7 @@ function MovieCard({ movie }) {
       })
 
       .catch(() => {
-        toast.error('Could not add to favorites')
+        toast.error('Could not add to favorites');
       })
   }
 
