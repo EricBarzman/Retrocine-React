@@ -7,7 +7,8 @@ import { auth } from "@/firebase/firebaseConfig"
 import { signInWithEmailAndPassword } from "firebase/auth";
 
 import { updateToken } from "@/store/userSlice";
-import { updateUserId } from "../../store/userSlice";
+import { updateSanityUserId, updateUserId } from "../../store/userSlice";
+import { getUserInfo } from "../../lib/apis";
 
 function Login() {
 
@@ -35,9 +36,12 @@ function Login() {
       const result = await signInWithEmailAndPassword(auth, email, password)
       const firebaseUserId = result.user.uid
       const token = result.user.accessToken
-      // Store token
+
       dispatch(updateToken(token));
       dispatch(updateUserId({ firebaseUserId }));
+      const user = await getUserInfo(firebaseUserId);
+      dispatch(updateSanityUserId({ sanityUserId: user._id }));
+      dispatch({ type: 'FETCH_FAVORITES' });
 
       navigate('/')
     

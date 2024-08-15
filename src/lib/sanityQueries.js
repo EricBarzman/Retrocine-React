@@ -16,7 +16,16 @@ export const getUserInfoQuery = `*[_type == "user" && firebaseId == $firebaseUse
 
 export const getUserFavoritesQuery = `*[_type == "user_favorite" && user._ref == $userId] {
     _id,
-    movie->{_id, title},
+    movie->{
+        _id,
+        title,
+        "slug": slug.current,
+        director->{_id, first_name, last_name},
+        country->{_id, name, region},
+        year,
+        youtube_id,
+        "imageUrl": image.asset->url,
+    },
 }`
 
 export const getTopicsQuery = `*[_type == "topic"] {

@@ -1,5 +1,5 @@
 import { updateFavorites } from "./favoriteSlice";
-import { getUserFavorites } from "../lib/apis.js";
+import { getUserFavorites, getUserInfo } from "@/lib/apis.js";
 
 /**
  * 
@@ -8,12 +8,15 @@ import { getUserFavorites } from "../lib/apis.js";
 const favoriteMiddleware = (store) => (next) => (action) => {
 
   if (action.type === 'FETCH_FAVORITES') {
-    const sanityUserId = store.getState().user.sanityUserId;
-    getUserFavorites(sanityUserId)
-      .then(response => {
-        store.dispatch(updateFavorites(response))
-      })
-    }
+    
+    const firebaseUserId = store.getState().user.firebaseUserId;
+    
+    getUserInfo(firebaseUserId)
+      .then(result =>
+          getUserFavorites(result._id)
+            .then(response => store.dispatch(updateFavorites(response)))
+      )
+  }
   next(action);
 };
   

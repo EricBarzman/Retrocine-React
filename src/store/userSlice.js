@@ -4,6 +4,7 @@ export const initialState = {
     logged: localStorage.getItem('retrocine-token') ? true : false,
     token: localStorage.getItem('retrocine-token') ?? '',
     firebaseUserId: localStorage.getItem('firebase-user-id') ?? '',
+    sanityUserId: localStorage.getItem('sanity-user-id') ?? '',
 }
 
 const userSlice = createSlice({
@@ -28,10 +29,12 @@ const userSlice = createSlice({
                 logged: false,
                 token: '',
                 firebaseUserId: '',
+                sanityUserId: '',
             };
 
             localStorage.removeItem('retrocine-token')
             localStorage.removeItem('firebase-user-id')
+            localStorage.removeItem('sanity-user-id')
             
             return newState;
         },
@@ -46,9 +49,20 @@ const userSlice = createSlice({
             }
             return newState;
         },
+
+        updateSanityUserId: (state, action) => {
+            const { sanityUserId } = action.payload;
+
+            localStorage.setItem('sanity-user-id', sanityUserId);
+            const newState = {
+                ...state,
+                sanityUserId,
+            }
+            return newState;
+        },
     }
 });
 
-export const { updateToken, handleLogout, updateUserId } = userSlice.actions;
+export const { updateToken, handleLogout, updateUserId, updateSanityUserId } = userSlice.actions;
 
 export default userSlice.reducer;

@@ -8,35 +8,46 @@ import { MdFavoriteBorder } from "react-icons/md";
 import { MdFavorite } from "react-icons/md";
 import toast from 'react-hot-toast';
 
+import { createUserFavorite, deleteUserFavorite } from '@/lib/apis';
+
 function MovieCard({ movie }) {
 
-  const my_favorites = useSelector((state) => state.favorites.my_favorites);
-  const [isFavorite, setIsFavorite] = useState(false);
+
   const dispatch = useDispatch();
   
+  const { sanityUserId } = useSelector((state) => state.user);
+  const my_favorites = useSelector((state) => state.favorites.my_favorites);
+  const [favoriteId, setFavoriteId] = useState('');
+  const [isFavorite, setIsFavorite] = useState(false);
+  
+
   useEffect(() => {
-    const found = my_favorites.some((favorite) => favorite.id === movie.id)
-    if (found) setIsFavorite(true);
+    const foundFavorite = my_favorites.some((favorite) => favorite.movie._id === movie._id)
+    if (foundFavorite) {
+      setIsFavorite(true);
+      setFavoriteId(foundFavorite._id);
+    }
   }, [])
   
 
   function addToMyFavorites() {   
-    axios
-      .get(`votes/my-favorites/add/${movie.id}`)
+    createUserFavorite(sanityUserId, movie._id)
       .then(() => {
         toast.success('Added to my favorites');
-        dispatch({ type: 'FETCH_FAVORITES' });
-        // Cheat to display card as favorite, without rerendering the page
         setIsFavorite(true);
+        dispatch({ type: 'FETCH_FAVORITES' });        
       })
+
       .catch(() => {
         toast.error('Could not add to favorites')
       })
   }
 
+
   function removeFromMyFavorites() {
-    axios
-      .get(`votes/my-favorites/remove/${movie.id}`)
+    console.log(favoriteId);
+    
+    deleteUserFavorite(favoriteId)
       .then(() => {
         toast.success('Removed from my favorites');
         dispatch({ type: 'FETCH_FAVORITES' });
@@ -44,9 +55,10 @@ function MovieCard({ movie }) {
         setIsFavorite(false);
       })
       .catch(() => {
-        toast.error('Could not add to favorites')
+        toast.error('Could not remove from favorites')
       })
   }
+
 
   return (
     <article className='w-[245px] mx-1 mb-6'>

@@ -210,3 +210,8 @@ export async function createUserFavorite(userId, movieId) {
 
   return data;
 }
+
+
+export async function deleteUserFavorite(favoriteId) {
+  await sanityClient.delete(favoriteId);
+}
