@@ -15,7 +15,7 @@ function Home() {
         getAllMovies()
             .then(result => {
                 setMovies(result);
-                // setMovies(result.slice(0,10));
+                setMovies(result.slice(0,10));
             }
         );
         // Get a random movie

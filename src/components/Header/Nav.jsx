@@ -6,30 +6,21 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { updateSearchInput } from "@/store/searchSlice";
 
-import { getAvatars, getUserInfo } from "@/lib/apis";
+import { getUserInfo } from "@/lib/apis";
 
 function Nav() {
 
-    const [searchInput, setSearchInput] = useState('');
-    const [avatarUrl, setAvatarUrl] = useState('');
-
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    
+    const [searchInput, setSearchInput] = useState('');
     const [user, setUser] = useState(null);
 
     const storeUser = useSelector((state) => state.user)
-    
+
     useEffect(()=> {
-        getUserInfo(storeUser.firebaseUserId)
-            .then(user => {
-                console.log(user);    
-                setUser(user)
-            })
-        getAvatars().then(result => {
-            const targetUrl = result.find(avatar => avatar._id === user.avatar._ref).imageUrl
-            setAvatarUrl(targetUrl);
-        });
-      }, [])
+        getUserInfo(storeUser.firebaseUserId).then(user => setUser(user))        
+    }, [storeUser.firebaseUserId])
 
     function handleSearch(event) {
         event.preventDefault();
@@ -41,9 +32,12 @@ function Nav() {
     <header className="px-4 py-5 bg-black text-white mx-auto text-xl flex flex-wrap md:flex-nowrap items-center justify-between">
         
         <div className="flex ml-4 items-end">
+            
             {/* Logo */}
             <h1>
-                <Link to='/' className="text-2xl font-bold text-primary"><span className="text-4xl">R</span>ETROCINE</Link>
+                <Link to='/' className="text-2xl font-bold text-primary">
+                    <span className="text-4xl">R</span>ETROCINE
+                </Link>
             </h1>
             
             {/* Search options */}
@@ -52,6 +46,7 @@ function Nav() {
                 <li className="font-light px-4 hover:-translate-y-2 duration-500 transition-all">
                     <Link to='/'>Home</Link>
                 </li>
+
                 <li className="font-light px-4 hover:-translate-y-2 duration-500 transition-all">
                     <Link to='/movies'>Movies</Link>
                 </li>
@@ -92,7 +87,7 @@ function Nav() {
             {/* My account */}
             <div className="ml-4">
                 <Link to='/my-account'>
-                    <img src={`https://cdn.sanity.io/${avatarUrl}`} className="w-[50px] h-[50px]" alt="profile" />
+                    <img src={`https://cdn.sanity.io/${user?.avatar.imageUrl}`} className="w-[50px] h-[50px]" alt="profile" />
                 </Link>
             </div>
         </div>

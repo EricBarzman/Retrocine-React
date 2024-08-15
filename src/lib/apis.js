@@ -51,6 +51,15 @@ export async function getUserFavorites(userId) {
   );
 }
 
+
+export async function getAvatars() {
+  return await sanityClient.fetch(
+    queries.getAllAvatarsQuery,
+    {},
+    { cache: "no-cache" }
+  );
+}
+
 export async function updateUserAvatar({ userId, avatarObj }) {
   const mutation = {
     mutations: [
@@ -128,33 +137,76 @@ export async function getAllMovies() {
   );
 }
 
-export async function getRandomMovie() {
+
+export async function getGenres() {
   return await sanityClient.fetch(
-    queries.getRandomMovieQuery,
+    queries.getGenresQuery,
     {},
     { cache: "no-cache" }
   );
 }
 
-export async function searchForMovie() {}
 
-
-export async function getMovie() {}
-
-export async function getGenres() {}
-
-export async function getMovieByGenre() {}
-
-export async function getCountries() {}
-
-export async function getMoviesByCountry() {}
-
-export async function getFiveRandomMovies() {}
-
-export async function getAvatars() {
+export async function getCountries() {
   return await sanityClient.fetch(
-    queries.getAllAvatarsQuery,
+    queries.getCountriesQuery,
     {},
     { cache: "no-cache" }
   );
+}
+
+export async function getMoviesByGenre(genreId) {
+  return await sanityClient.fetch(
+    queries.getMoviesByGenreQuery,
+    { genreId },
+    { cache: "no-cache" }
+  );
+}
+
+export async function getMoviesByCountry(countryId) {
+  return await sanityClient.fetch(
+    queries.getMoviesByCountryQuery,
+    { countryId },
+    { cache: "no-cache" }
+  );
+}
+
+export async function getMovieBySlug(slug) {
+  return await sanityClient.fetch(
+    queries.getMovieBySlug,
+    { slug },
+    { cache: "no-cache" }
+  );
+}
+
+export async function createUserFavorite(userId, movieId) {
+  const mutation = {
+    mutations: [
+      {
+        create: {
+          _type: "user_favorite",
+          user: {
+            _type: "reference",
+            _ref: userId,
+          },
+          movie: {
+            _type: "reference",
+            _ref: movieId,
+          },
+        },
+      },
+    ],
+  };
+
+  const { data } = await axios.post(
+    `https://${import.meta.env.VITE_APP_SANITY_PROJECT_ID}.api.sanity.io/v2023-05-03/data/mutate/${import.meta.env.VITE_APP_SANITY_DATASET}`,
+    mutation,
+    {
+      headers: {
+        Authorization: `Bearer ${import.meta.env.VITE_APP_SANITY_API_TOKEN}`,
+      },
+    }
+  );
+
+  return data;
 }

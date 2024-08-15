@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react"
-import axios from '@/lib/axios';
 import { useSelector } from "react-redux";
 
 import MovieCard from "@/components/Movies/MovieCard/MovieCard";
+
+import { getAllMovies, getGenres, getCountries, getMoviesByGenre } from '@/lib/apis';
+import { getMoviesByCountry } from "@/lib/apis";
 
 function Index() {
 
@@ -17,32 +19,31 @@ function Index() {
   useEffect(()=> {
     document.title = `Movies | Retrocine`;
     // Get all movies
-    axios
-      .get('movies/index/')
-      .then(response => setMovies(response.data.slice(0,10))) // Retain only 10 films
+    getAllMovies()
+            .then(result => {
+                setMovies(result);
+                // setMovies(result.slice(0,10));
+            }
+        );
     // Get genres
-    axios
-      .get('movies/genre/')
-      .then(response => setGenres(response.data))
+    getGenres().then(response => setGenres(response))
     // Get country
-    axios
-      .get('movies/country/')
-      .then(response => setCountries(response.data))
+    getCountries().then(response => setCountries(response))
   }, [])
 
 
   // Search by Genre
-  function searchMoviesByGenre(event) {
-    axios
-      .get(`movies/genre/${event.target.value}`)
-      .then(response => setMovies(response.data))
+  function searchMoviesByGenre(e) {
+    getMoviesByGenre(e.target.value)
+      .then(response => setMovies(response))
   }
 
   // Search by Criteria
-  function searchMoviesByCriteria(event) {
-    axios
-      .get(`movies/${event.target.name}/${event.target.value}`)
-      .then(response => setMovies(response.data))
+  function searchMoviesByCriteria(e) {
+    console.log(e.target.value);
+    
+    getMoviesByCountry(e.target.value)
+      .then(response => setMovies(response))
   }
 
   return (
@@ -60,7 +61,7 @@ function Index() {
           >
             <option selected>- Genre -</option>
             {genres.map((genre) => (
-              <option key={genre.slug} value={genre.id}>{genre.label}</option>
+              <option key={genre._id} value={genre._id}>{genre.label}</option>
             ))}
           </select>
           
@@ -72,7 +73,7 @@ function Index() {
           >
             <option selected>- Country -</option>
             {countries.map((country) => (
-              <option key={country.id} value={country.id}>{country.name}</option>
+              <option key={country.name} value={country._id}>{country.name}</option>
             ))}
           </select>
         

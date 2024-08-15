@@ -1,15 +1,12 @@
 /* eslint-disable react/prop-types */
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { FaPlay, } from "react-icons/fa";
 import { MdFavoriteBorder } from "react-icons/md";
 import { MdFavorite } from "react-icons/md";
-
-import { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-
 import toast from 'react-hot-toast';
-import axios from '@/lib/axios';
 
 function MovieCard({ movie }) {
 
@@ -54,7 +51,9 @@ function MovieCard({ movie }) {
   return (
     <article className='w-[245px] mx-1 mb-6'>
         
-        <Link to={'/movies/' + movie.slug}><img className='rounded-lg' src={movie.get_image} alt="movie image" /></Link>
+        <Link to={'/movies/' + movie.slug}>
+          <img className='rounded-lg' src={movie.imageUrl} alt="movie image" />
+        </Link>
         
         <h2 className='font-semibold'>{movie.title}</h2>
         

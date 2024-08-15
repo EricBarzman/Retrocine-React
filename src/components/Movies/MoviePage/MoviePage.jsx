@@ -1,72 +1,69 @@
-import axios from '@/lib/axios';
-import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import toast from 'react-hot-toast';
 
 import { MdFavoriteBorder } from "react-icons/md";
 import { MdFavorite } from "react-icons/md";
 
-import MovieVideo from '../MovieVideo/MovieVideo';
-import toast from 'react-hot-toast';
-import { useDispatch, useSelector } from "react-redux";
 import CommentCard from "./CommentCard";
 import RateMovieModal from "./RateMovieModal";
 import BackDrop from "./BackDrop";
+import MovieVideo from '../MovieVideo/MovieVideo';
+
+import { getMovieBySlug, createUserFavorite, getUserFavorites, getUserInfo } from '@/lib/apis';
+
+// Define how a movie object looks like
+const defaultMovie = {
+    title:'',
+    year:'',
+    country: '',
+    director: {
+        first_name:'',
+        last_name:'',
+    },
+    genre:{
+        label: ''
+    },
+    keywords: []
+}
 
 function MoviePage() {
-    
-    // Define how a movie object looks like
-    const defaultMovie = {
-        title:'',
-        year:'',
-        country: '',
-        director: {
-            first_name:'',
-            last_name:'',
-        },
-        genre:{
-            label: ''
-        },
-        keywords: []
-    }
 
-    // Check if it's a favorite, and if already voted for
     const [isFavorite, setIsFavorite] = useState(false);
     const [isRateMovieModalOpen, setIsRateMovieModalOpen] = useState(false);
+    const [userFavorites, setUserFavorites] = useState([]);
     
-    const dispatch = useDispatch();
-    const my_favorites = useSelector((state) => state.favorites.my_favorites);
+    const storeUser = useSelector((state) => state.user);
+    const [user, setUser] = useState(null);
 
     // Get the slug to recover the movie
     let movie_slug = useParams().movie_slug;
     const [movie, setMovie] = useState(defaultMovie);
 
-
     // Get the movie info, check if favorite, and if already voted for
     useEffect(() => {
-        async function fetchMovie() {
-            await axios
-            .get(`movies/index/${movie_slug}/`)
-            .then((response) => {
-                setMovie(response.data)
-            })
-        }
-        fetchMovie();
-        const found = my_favorites.some((favorite) => favorite.id === movie.id)
-        if (found) setIsFavorite(true);
+        getUserInfo(storeUser.firebaseUserId).then(result => setUser(result));
+
+        getMovieBySlug(movie_slug).then((response) => setMovie(response));
         
         document.title = `${movie.title} | Retrocine`;
-    }, [movie.title, movie_slug])
 
+        getUserFavorites(user?._id).then(response => {
+            setUserFavorites(response)
+            const isFound = userFavorites.some((favorite) => favorite._id === movie._id)
+            setIsFavorite(isFound);
+        });
+    }, [movie.id, movie.title, movie_slug, userFavorites])
 
     function addToMyFavorites() {
-        axios
-            .get(`votes/my-favorites/add/${movie.id}`)
+        createUserFavorite(user, movie)
             .then(() => {
                 toast.success('Added to my favorites');
-                dispatch({ type: 'FETCH_FAVORITES' });
-                // Cheat to display card as favorite, without rerendering the page
+                getUserFavorites(user._id).then(response => setUserFavorites(response))
                 setIsFavorite(true);
             })
+
             .catch(() => {
                 toast.error('Could not add to favorites')
             })
@@ -74,17 +71,17 @@ function MoviePage() {
 
 
     function removeFromMyFavorites() {
-        axios
-            .get(`votes/my-favorites/remove/${movie.id}`)
-            .then(() => {
-                toast.success('Removed from my favorites');
-                dispatch({ type: 'FETCH_FAVORITES' });
-                // Little cheat to display card no longer as favorite, yet without rerendering
-                setIsFavorite(false);
-            })
-            .catch(() => {
-                toast.error('Could not add to favorites')
-        })
+        // axios
+        //     .get(`votes/my-favorites/remove/${movie.id}`)
+        //     .then(() => {
+        //         toast.success('Removed from my favorites');
+        //         dispatch({ type: 'FETCH_FAVORITES' });
+        //         // Little cheat to display card no longer as favorite, yet without rerendering
+        //         setIsFavorite(false);
+        //     })
+        //     .catch(() => {
+        //         toast.error('Could not add to favorites')
+        // })
     }
 
     
@@ -145,13 +142,13 @@ function MoviePage() {
                 <p>{movie.short_description}</p>
             </div>
             
-            <div className="pl-10 mt-6 mb-10">
+            {/* <div className="pl-10 mt-6 mb-10">
                 <div className="text-gray-500 text-sm mb-3">Keywords</div>
                 {movie.keywords.map(keyword => (
                     <div className="text-sm" key={keyword.id}>{keyword.label}</div>
                 ))}
             
-            </div>
+            </div> */}
 
             {/* Reviews */}
             {movie.votes && (

@@ -7,7 +7,7 @@ function MovieVideo({youtube_id}) {
             src={`https://www.youtube.com/embed/${youtube_id}`}
             width="70%"
             height="600"
-            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
+            allow="picture-in-picture;"
             allowFullScreen>
         </iframe>
     </div>

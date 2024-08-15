@@ -5,26 +5,31 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { handleLogout } from "@/store/userSlice";
 
-import { getAvatars, updateUserAvatar } from '@/lib/apis';
+import { getAvatars, updateUserAvatar, getUserInfo } from '@/lib/apis';
 
 function My_Account() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const storeUser = useSelector((state) => state.user)
 
-  const user = useSelector((state) => state.user);
+  const [user, setUser] = useState(null);
   const [avatars, setAvatars] = useState([]);
-  const [currentAvatar, setCurrentAvatar] = useState({});
   const [chosenAvatarId, setChosenAvatarId] = useState('');
+
 
   useEffect(()=> {
     document.title = `My Account | Retrocine`;
-    getAvatars().then(result => {    
-        setAvatars(result);
-        const userAvatar = result.find(avat => avat._id === user.avatarId);
-        setCurrentAvatar(userAvatar);
+
+    getUserInfo(storeUser.firebaseUserId).then(result => {
+      setUser(result)
     });
-  }, [])
+
+    getAvatars().then(result => {    
+      setAvatars(result);
+    });
+  }, [user])
+
 
   function clickLogout() {
     dispatch(handleLogout());
@@ -34,19 +39,18 @@ function My_Account() {
   async function submitAvatar() {
     try {
         await updateUserAvatar({
-            userId: user.sanityUserId,
+            userId: user._id,
             avatarObj: {
                 _type: "reference",
                 _ref: chosenAvatarId
             }
         });
-        toast.success("Avatar changed!")
+        toast.success("Avatar changed!");
+        getUserInfo(storeUser.firebaseUserId).then(result => {
+          setUser(result);
+        });
+        window.location.reload();
         
-        dispatch({
-            type: 'FETCH_USER_INFOS',
-            payload: { userId: user.sanityUserId }
-          });
-
     } catch(error) {
         toast.error(error)
     }
@@ -58,14 +62,14 @@ function My_Account() {
             <div className="text-white p-4 flex items-center mb-8">
                 <div className="md:w-[143px] w-28 h-28">
                     <img 
-                        src={`https://cdn.sanity.io/${currentAvatar.imageUrl}`}
-                        alt={currentAvatar.label}
+                        src={`https://cdn.sanity.io/${user?.avatar.imageUrl}`}
+                        alt={user?.avatar.label}
                         width={200}
                     />
                 </div>
 
                 <div className="ml-12 font-bold text-lg capitalize">
-                    {user.username}
+                    {user?.username}
                 </div>
             </div>
 

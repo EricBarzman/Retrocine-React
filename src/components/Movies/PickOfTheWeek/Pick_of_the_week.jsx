@@ -1,15 +1,24 @@
-import axios from '@/lib/axios';
 import { useEffect, useState } from "react"
-import MovieCard from "../MovieCard/MovieCard";
+import MovieCard from "@/components/Movies/MovieCard/MovieCard";
+
+import { getAllMovies } from '@/lib/apis';
 
 function Pick_of_the_week() {
 
   const [randomMovies, setRandomMovies] = useState([]);
 
   useEffect(() => {
-    axios
-      .get('movies/pick-of-the-week')
-      .then((response) => setRandomMovies(response.data))
+    let fiveMovies = [];
+    getAllMovies()
+      .then((result) => {
+        for (let i = 0; i < 5; i++) {
+          const randIndex = Math.floor(Math.random() * result.length)
+          const randomMovie = result[randIndex];
+          fiveMovies.push(randomMovie);
+        }
+        setRandomMovies(fiveMovies);
+        fiveMovies = [];
+      })
   }, []);
 
   return (
@@ -18,7 +27,7 @@ function Pick_of_the_week() {
       <h3 className="text-xl mb-6">Special random selection of five oldies but goodies!</h3>
       <section className="flex flex-row flex-wrap">
         {randomMovies.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} />
+          <MovieCard key={movie._id} movie={movie} />
         ))}
       </section>
     </main>
